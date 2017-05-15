@@ -22,4 +22,24 @@ describe Oystercard do
         expect{ subject.deduct 2.40 }.to change{ subject.balance }.by -2.40
       end
     end
+
+    describe '#in_journey?' do
+      it 'the oystercard should initially not be in use for ajourney' do
+        expect(subject).not_to be_in_journey
+      end
+    end
+
+    describe '#touch_in' do
+      it 'allows a user to touch in' do
+        subject.touch_in
+        expect(subject).to be_in_journey
+      end
+    end
+
+    describe '#touch_out' do
+      it 'allows a user to touch out' do
+        subject.touch_out
+        expect(subject).not_to be_in_journey
+      end
+    end
 end
