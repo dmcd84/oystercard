@@ -31,8 +31,13 @@ describe Oystercard do
 
     describe '#touch_in' do
       it 'allows a user to touch in' do
+        subject.top_up(Oystercard::MINIMUM_BALANCE)
         subject.touch_in
         expect(subject).to be_in_journey
+      end
+      it 'will not touch in if blance it below minimum' do
+        min_balance = Oystercard::MINIMUM_BALANCE
+        expect{ subject.touch_in }.to raise_error "Insufficient balance to travel"
       end
     end
 

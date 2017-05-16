@@ -7,6 +7,7 @@ class Oystercard
   end
 
   BALANCE_LIMIT = 90
+  MINIMUM_BALANCE = 1
 
   def top_up(amount)
     fail "Maximum balance of £#{BALANCE_LIMIT} exceeded" if @balance + amount > BALANCE_LIMIT
@@ -18,6 +19,7 @@ class Oystercard
   end
 
   def touch_in
+    fail "Insufficient balance to travel" if @balance < MINIMUM_BALANCE
     @in_use = true
   end
 
