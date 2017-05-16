@@ -9,7 +9,7 @@ class Oystercard
 
   BALANCE_LIMIT = 90
   MINIMUM_BALANCE = 1
-  MINIMUM_FARE = 2.40
+  MINIMUM_FARE = 2
 
   def top_up(amount)
     fail "Maximum balance of £#{BALANCE_LIMIT} exceeded" if @balance + amount > BALANCE_LIMIT

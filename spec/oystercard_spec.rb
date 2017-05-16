@@ -21,38 +21,44 @@ describe Oystercard do
     end
 
     describe '#touch_in' do
-      it 'allows a user to touch in' do
+      before(:each) do
         subject.top_up(Oystercard::MINIMUM_BALANCE)
         subject.touch_in(:entry_station)
+      end
+
+      it 'allows a user to touch in' do
         expect(subject.entry_station).not_to eq nil
       end
-      it 'will not touch in if balance is below minimum' do
-        expect{ subject.touch_in(:entry_station) }.to raise_error "Insufficient balance to travel"
-      end
+
       it 'remembers the entry station' do
-        subject.top_up(Oystercard::MINIMUM_BALANCE)
-        subject.touch_in(01)
-        expect(subject.entry_station).to eq 01
+        expect(subject.entry_station).to eq :entry_station
+      end
+
+      context 'insufficient funds on card' do
+        let(:oystercard) { described_class.new }
+
+        it 'will not touch in if balance is below minimum' do
+          expect{ oystercard.touch_in(:entry_station) }.to raise_error "Insufficient balance to travel"
+        end
       end
     end
 
     describe '#touch_out' do
-      it 'allows a user to touch out' do
-        subject.top_up(Oystercard::BALANCE_LIMIT)
-        subject.touch_in(:station)
-        subject.touch_out(:station)
-        expect(subject.entry_station).to eq nil
-      end
-      it 'deducts the fare from the balance of the oystercard' do
-        expect{ subject.touch_out(:station) }.to change{ subject.balance }.by (-Oystercard::MINIMUM_FARE)
-      end
-    end
-
-    describe '#journeys' do
-      it 'touching in and out should create one journey' do
+      before(:each) do
         subject.top_up(Oystercard::BALANCE_LIMIT)
         subject.touch_in(:Paddington)
         subject.touch_out(:Oxford_Circus)
+      end
+      
+      it 'allows a user to touch out' do
+        expect(subject.entry_station).to eq nil
+      end
+
+      it 'deducts the fare from the balance of the oystercard' do
+        expect{ subject.touch_out(:station) }.to change{ subject.balance }.by(-Oystercard::MINIMUM_FARE)
+      end
+
+      it 'touching in and out should create one journey' do
         expect(subject.journeys).to eq [{entry_station: :Paddington, exit_station: :Oxford_Circus}]
       end
     end
