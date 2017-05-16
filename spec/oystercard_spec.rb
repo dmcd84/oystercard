@@ -20,19 +20,13 @@ describe Oystercard do
       end
     end
 
-    describe '#in_journey?' do
-      it 'the oystercard should initially not be in use for a journey' do
-        expect(subject).not_to be_in_journey
-      end
-    end
-
     describe '#touch_in' do
       it 'allows a user to touch in' do
         subject.top_up(Oystercard::MINIMUM_BALANCE)
         subject.touch_in(:entry_station)
-        expect(subject).to be_in_journey
+        expect(subject.entry_station).not_to eq nil
       end
-      it 'will not touch in if blance it below minimum' do
+      it 'will not touch in if balance is below minimum' do
         expect{ subject.touch_in(:entry_station) }.to raise_error "Insufficient balance to travel"
       end
       it 'remembers the entry station' do
@@ -47,7 +41,7 @@ describe Oystercard do
         subject.top_up(Oystercard::BALANCE_LIMIT)
         subject.touch_in(:station)
         subject.touch_out(:station)
-        expect(subject).not_to be_in_journey
+        expect(subject.entry_station).to eq nil
       end
       it 'deducts the fare from the balance of the oystercard' do
         expect{ subject.touch_out(:station) }.to change{ subject.balance }.by (-Oystercard::MINIMUM_FARE)
