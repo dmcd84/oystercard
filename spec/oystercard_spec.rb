@@ -17,12 +17,6 @@ describe Oystercard do
       end
     end
 
-    describe '#deduct' do
-      it 'can deduct a fare from the card balance' do
-        expect{ subject.deduct 2.40 }.to change{ subject.balance }.by -2.40
-      end
-    end
-
     describe '#in_journey?' do
       it 'the oystercard should initially not be in use for ajourney' do
         expect(subject).not_to be_in_journey
@@ -45,6 +39,9 @@ describe Oystercard do
       it 'allows a user to touch out' do
         subject.touch_out
         expect(subject).not_to be_in_journey
+      end
+      it 'deducts the fare from the balance of the oystercard' do
+        expect{ subject.touch_out }.to change{ subject.balance }.by (-Oystercard::MINIMUM_FARE)
       end
     end
 end
