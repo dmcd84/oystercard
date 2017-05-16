@@ -44,10 +44,13 @@ describe Oystercard do
 
     describe '#touch_out' do
       it 'allows a user to touch out' do
+        subject.top_up(Oystercard::BALANCE_LIMIT)
+        subject.touch_in(:station)
+        subject.touch_out(:station)
         expect(subject).not_to be_in_journey
       end
       it 'deducts the fare from the balance of the oystercard' do
-        expect{ subject.touch_out }.to change{ subject.balance }.by (-Oystercard::MINIMUM_FARE)
+        expect{ subject.touch_out(:station) }.to change{ subject.balance }.by (-Oystercard::MINIMUM_FARE)
       end
     end
 
