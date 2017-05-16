@@ -1,12 +1,15 @@
 require 'oystercard'
 
 describe Oystercard do
+  let(:entry_station) {double :station}
+  let(:exit_station) {double :station}
+
     it 'has a an intial balance' do
       expect(subject.balance).to eq(0)
     end
 
     it 'has an empty list of journeys by default' do
-      expect(subject.journeys).to eq []
+      expect(subject.journeys).to be_empty
     end
 
     describe '#top_up' do
@@ -46,10 +49,10 @@ describe Oystercard do
     describe '#touch_out' do
       before(:each) do
         subject.top_up(Oystercard::BALANCE_LIMIT)
-        subject.touch_in(:Paddington)
-        subject.touch_out(:Oxford_Circus)
+        subject.touch_in(:entry_station)
+        subject.touch_out(:exit_station)
       end
-      
+
       it 'allows a user to touch out' do
         expect(subject.entry_station).to eq nil
       end
@@ -59,7 +62,7 @@ describe Oystercard do
       end
 
       it 'touching in and out should create one journey' do
-        expect(subject.journeys).to eq [{entry_station: :Paddington, exit_station: :Oxford_Circus}]
+        expect(subject.journeys).to eq [{entry_station: :entry_station, exit_station: :exit_station}]
       end
     end
 end
