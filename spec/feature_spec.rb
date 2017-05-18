@@ -38,4 +38,16 @@ describe Oystercard do
     card.touch_in(journey)
     expect(journey.complete?).to eq true
   end
+
+  it 'will charge a penalty fare unless a journey is completed' do
+    card = Oystercard.new
+    card.top_up(10)
+    station1 = Station.new(:no_name, :no_zone)
+    station2 = Station.new(:exit_station, 3)
+    journey = Journey.new(station1, station2)
+    card.touch_out(journey)
+    expect(journey.calculate_fare).to eq Journey::PENALTY_FARE
+  end
+
+
 end

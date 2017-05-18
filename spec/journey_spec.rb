@@ -31,5 +31,19 @@ describe Journey do
     expect(journey.complete?).to eq false
   end
 
+  it 'charges penalty fare if a journey is incomplete' do
+    station1 = Station.new(:no_name, :no_zone)
+    station2 = Station.new(:exit_station, 3)
+    journey = Journey.new(station1, station2)
+    expect(journey.calculate_fare).to eq Journey::PENALTY_FARE
+  end
+
+  it 'charges minimum fare if a journey is complete' do
+    station1 = Station.new(:entry_station, 2)
+    station2 = Station.new(:exit_station, 3)
+    journey = Journey.new(station1, station2)
+    expect(journey.calculate_fare).to eq Journey::MINIMUM_FARE
+  end
+
 
 end
