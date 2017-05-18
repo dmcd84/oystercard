@@ -1,5 +1,5 @@
 require_relative 'station'
-
+require_relative 'journey'
 class Oystercard
   attr_reader :balance, :entry_station, :journeys
 
@@ -14,18 +14,18 @@ class Oystercard
   MINIMUM_FARE = 2
 
   def top_up(amount)
-    fail "Maximum balance of £#{BALANCE_LIMIT} exceeded" if @balance + amount > BALANCE_LIMIT
+    raise "Maximum balance of £#{BALANCE_LIMIT} exceeded" if @balance + amount > BALANCE_LIMIT
     @balance += amount
   end
 
   def touch_in(entry_station)
-    fail "Insufficient balance to travel" if @balance < MINIMUM_BALANCE
+    raise 'Insufficient balance to travel' if @balance < MINIMUM_BALANCE
     @entry_station = entry_station
   end
 
   def touch_out(exit_station)
     deduct(MINIMUM_FARE)
-    @journeys << {entry_station: entry_station, exit_station: exit_station}
+    @journeys << { entry_station: entry_station, exit_station: exit_station }
     @entry_station = nil
   end
 
