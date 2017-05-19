@@ -10,8 +10,17 @@ class Journey
   PENALTY_FARE = 6
   MINIMUM_FARE = 2
 
+
   def complete?
-    entry_station.name != :no_name && exit_station.name != :no_name
+    started? && ended?
+  end
+
+  def started?
+    @entry_station.name != :no_name
+  end
+
+  def ended?
+    @exit_station.name != :no_name
   end
 
   def calculate_fare
