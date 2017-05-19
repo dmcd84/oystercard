@@ -20,6 +20,8 @@ class Oystercard
   end
 
   def touch_in(entry_station)
+    Journey.new
+    calculate_fare if @in_use == true
     raise 'Insufficient balance to travel' if @balance < MINIMUM_BALANCE
     @entry_station = entry_station
     @in_use = true

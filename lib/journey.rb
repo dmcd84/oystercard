@@ -19,14 +19,6 @@ class Journey
     @complete
   end
 
-  # def started?
-  #   @entry_station.name != :no_name
-  # end
-  #
-  # def ended?
-  #   @exit_station.name != :no_name
-  # end
-
   def calculate_fare
     return PENALTY_FARE if penalty?
     MINIMUM_FARE
