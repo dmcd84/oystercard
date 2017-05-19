@@ -26,14 +26,15 @@ describe Journey do
 
   it 'knows if the current journey is not complete' do
     station1 = Station.new(:entry_station, 1)
-    station2 = Station.new(:no_name, 3)
+    station2 = Station.new(:no_name, :no_zone)
     journey = Journey.new(station1, station2)
+    journey.start_journey
     expect(journey.complete?).to eq false
   end
 
   it 'knows if the current journey has started' do
     station1 = Station.new(:entry_station, 1)
-    station2 = Station.new(:no_name, 3)
+    station2 = Station.new(:no_name, :no_zone)
     journey = Journey.new(station1, station2)
     expect(journey.started?).to eq true
   end
