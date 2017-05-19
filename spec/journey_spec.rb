@@ -1,69 +1,52 @@
 require 'journey'
 
 describe Journey do
-  subject(:journey) { described_class.new }
+  let(:station1) {double :station}
+  let(:station2) {double :station}
+  subject(:journey) { described_class.new(entry_station: station1)}
 
   it 'has an entry station' do
-    station1 = Station.new(:entry_station, 1)
-    station2 = Station.new(:exit_station, 3)
-    journey = Journey.new(station1, station2)
     expect(journey.entry_station).to eq station1
   end
 
   it 'has an exit station' do
-    station1 = Station.new(:entry_station, 1)
-    station2 = Station.new(:exit_station, 3)
-    journey = Journey.new(station1, station2)
-    expect(journey.exit_station).to eq station2
+    expect(journey.finish(station2)).to eq station2
   end
 
   it 'knows if the current journey has started' do
-    station1 = Station.new("Brixton", 1)
-    station2 = Station.new(:no_name, :no_zone)
-    journey = Journey.new(station1, station2)
-    expect(journey.started?).to eq true
-  end
-
-  it 'knows if the current journey has not ended' do
-    station1 = Station.new("Brixton", 1)
-    station2 = Station.new(:no_name, :no_zone)
-    journey = Journey.new(station1, station2)
-    expect(journey.ended?).to eq false
+    subject.entry_station = station1
+    expect(subject.complete?).to eq false
   end
 
   it 'knows if the current journey is complete' do
-    station1 = Station.new("Brixton", 1)
-    station2 = Station.new("Clapham", 3)
-    journey = Journey.new(station1, station2)
-    expect(journey.complete?).to eq true
+    subject.entry_station = station1
+    subject.finish(station2)
+    expect(subject.complete?).to eq true
   end
 
-  it 'knows if the current journey is incomplete because of no entry station' do
-    station1 = Station.new(:no_name, :no_zone)
-    station2 = Station.new("Clapham", 3)
-    journey = Journey.new(station1, station2)
-    expect(journey.complete?).to eq false
+  it 'charges penalty fare if a journey is incomplete due to no touch_in' do
+    subject.entry_station = nil
+    subject.finish(station2)
+    expect(subject.calculate_fare).to eq Journey::PENALTY_FARE
   end
 
-  it 'knows if the current journey is incomplete because of no exit station' do
-    station1 = Station.new("Clapham", 3)
-    station2 = Station.new(:no_name, :no_zone)
-    journey = Journey.new(station1, station2)
-    expect(journey.complete?).to eq false
-  end
-
-  it 'charges penalty fare if a journey is incomplete' do
-    station1 = Station.new(:no_name, :no_zone)
-    station2 = Station.new(:exit_station, 3)
-    journey = Journey.new(station1, station2)
-    expect(journey.calculate_fare).to eq Journey::PENALTY_FARE
+  it 'charges penalty fare if a journey is incomplete due to no touch_out' do
+    subject.entry_station = station1
+    subject.finish(nil)
+    expect(subject.calculate_fare).to eq Journey::PENALTY_FARE
   end
 
   it 'charges minimum fare if a journey is complete' do
-    station1 = Station.new(:entry_station, 2)
-    station2 = Station.new(:exit_station, 3)
-    journey = Journey.new(station1, station2)
+    subject.entry_station = station1
+    subject.finish(station2)
     expect(journey.calculate_fare).to eq Journey::MINIMUM_FARE
   end
-  
+
+  it 'charges penalty if tapped in twice' do
+    subject.entry_station = station1
+    subject.finish(nil)
+    subject.entry_station = station1
+    expect(journey.calculate_fare).to eq Journey::PENALTY_FARE
+  end
+
 end
