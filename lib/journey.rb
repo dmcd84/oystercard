@@ -14,6 +14,10 @@ class Journey
     entry_station.name != :no_name && exit_station.name != :no_name
   end
 
+  def started?
+    entry_station.name != :no_name && exit_station.name == :no_name
+  end
+
   def calculate_fare
      if complete?
        MINIMUM_FARE
